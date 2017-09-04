@@ -1,0 +1,31 @@
+  version: '3'
+
+  services:
+
+    clair:
+      image: 8gears/dockerized-clair:stable
+      restart: unless-stopped
+      environment:
+        DB_HOST: ${DB_HOST:-postgresdb}
+        DB_PORT: ${DB_PORT:-5432}
+        DB_USER: ${DB_USER:-clair}
+        DB_PASSWORD:
+        DB_SSLMODE: ${DB_SSLMODE:-disable}
+        DB_STATEMENT_TIMEOUT: ${DB_STATEMENT_TIMEOUT:-60000}
+      ports:
+        - 6060:6060
+        - 6061:6061
+      depends_on:
+        - postgresdb
+
+    postgresdb:
+      image: postgres:latest
+      restart: unless-stopped
+      environment:
+        POSTGRES_USER: ${DB_USER:-clair}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+      volumes:
+        - pg-data:/var/lib/postgresql/data
+
+  volumes:  
+    pg-data:
