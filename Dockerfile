@@ -11,8 +11,6 @@ RUN apk add --no-cache git bzr rpm xz
 COPY --from=clair /clair /usr/local/bin/clair
 COPY --from=build /tmp/dockerize /usr/local/bin/dockerize
 ADD config.tpl.yaml /etc/clair/config.tpl.yaml
-
 EXPOSE 6060 6061
 VOLUME /tmp
-#CMD ["sh","-c","dockerize", "-template","/etc/clair/config.tpl.yaml:/etc/clair/config.yaml", "-wait tcp://$DB_HOST:$DB_PORT", "-timeout 60s","clair"]
-CMD dockerize -template /etc/clair/config.tpl.yaml:/etc/clair/config.yaml -wait tcp://$DB_HOST:$DB_PORT -timeout 60s clair
+CMD dockerize -template /etc/clair/config.tpl.yaml:/etc/clair/config.yaml -wait tcp://${DB_HOST}:${DB_PORT} -timeout 60s clair
